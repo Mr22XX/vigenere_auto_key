@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vigenere Auto Key Cipher</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <h2 class="text-xl font-bold mb-4 text-center">Vigenere Auto Key Cipher</h2>
+        <label class="block mb-2">Plaintext / Ciphertext:</label>
+        <textarea id="inputText" class="w-full p-2 border rounded mb-4"></textarea>
+        
+        <label class="block mb-2">Key:</label>
+        <input type="text" id="key" class="w-full p-2 border rounded mb-4" />
+        
+        <div class="flex justify-between">
+            <button onclick="encrypt()" class="bg-blue-500 text-white px-4 py-2 rounded">Encrypt</button>
+            <button onclick="decrypt()" class="bg-green-500 text-white px-4 py-2 rounded">Decrypt</button>
+        </div>
+        
+        <label class="block mt-4 mb-2">Result:</label>
+        <textarea id="result" class="w-full p-2 border rounded" readonly></textarea>
+    </div>
+
+    <script>
+        function vigenereAutoKeyEncrypt(plainText, key) {
+            plainText = plainText.toUpperCase().replace(/[^A-Z]/g, "");
+            key = key.toUpperCase().replace(/[^A-Z]/g, "");
+            let extendedKey = key + plainText;
+            let cipherText = "";
+            
+            for (let i = 0; i < plainText.length; i++) {
+                let p = plainText.charCodeAt(i) - 65;
+                let k = extendedKey.charCodeAt(i) - 65;
+                cipherText += String.fromCharCode(((p + k) % 26) + 65);
+            }
+            return cipherText;
+        }
+        
+        function vigenereAutoKeyDecrypt(cipherText, key) {
+            cipherText = cipherText.toUpperCase().replace(/[^A-Z]/g, "");
+            key = key.toUpperCase().replace(/[^A-Z]/g, "");
+            let plainText = "";
+            
+            for (let i = 0; i < cipherText.length; i++) {
+                let c = cipherText.charCodeAt(i) - 65;
+                let k = (i < key.length) ? key.charCodeAt(i) - 65 : plainText.charCodeAt(i - key.length) - 65;
+                plainText += String.fromCharCode(((c - k + 26) % 26) + 65);
+            }
+            return plainText;
+        }
+        
+        function encrypt() {
+            let text = document.getElementById("inputText").value;
+            let key = document.getElementById("key").value;
+            document.getElementById("result").value = vigenereAutoKeyEncrypt(text, key);
+        }
+        
+        function decrypt() {
+            let text = document.getElementById("inputText").value;
+            let key = document.getElementById("key").value;
+            document.getElementById("result").value = vigenereAutoKeyDecrypt(text, key);
+        }
+    </script>
+</body>
+</html>
